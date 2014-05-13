@@ -23,5 +23,8 @@
   "homepage": "https://github.com/morganherlocker/turf-tin",
   "devDependencies": {
     "tape": "^2.12.3"
+  },
+  "dependencies": {
+    "turf-polygon": "^0.1.0"
   }
 }
