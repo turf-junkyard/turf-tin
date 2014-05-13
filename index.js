@@ -1,13 +1,13 @@
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
-var polygon = require('turf-polygon'),
-var nearest = require('turf-nearest'),
+var polygon = require('turf-polygon')
+var nearest = require('turf-nearest')
 var point = require('turf-point')
 
 module.exports = function(points, z, done){
   //break down points
   var vertices = []
-  _(points.features).each(function(p){
+  points.features.forEach(function(p){
     vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]})
   })
 
@@ -19,18 +19,18 @@ module.exports = function(points, z, done){
 
   done = done || function () {};
 
-  _(triangulated).each(function(triangle){
+  triangulated.forEach(function(triangle){
     var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]]
-    var poly = t.polygon(coords, {a: null, b: null, c: null})
+    var poly = polygon(coords, {a: null, b: null, c: null})
 
     triangles.features.push(poly)
   })
   if(z){
     // add values from vertices
-    _.each(triangles.features, function(tri){
+    triangles.features.forEach(function(tri){
       var coordinateNumber = 1
-      _.each(tri.geometry.coordinates[0], function(c){
-        var closest = t.nearest(t.point(c[0], c[1]), points);
+      tri.geometry.coordinates[0].forEach(function(c){
+        var closest = nearest(point(c[0], c[1]), points);
 
         if(coordinateNumber === 1){
           tri.properties.a = closest.properties[z]
@@ -46,17 +46,18 @@ module.exports = function(points, z, done){
     })
   }
 
-  _.each(triangles.features, function(tri){
+  triangles.features.forEach(function(tri){
     tri = correctRings(tri)
   })
+  console.log('BLARG')
   
   done(null, triangles)
   return triangles;
 }
 
 function correctRings(poly){
-  _.each(poly.geometry.coordinates, function(ring){
-    var isWrapped =_.isEqual(ring[0], ring.slice(-1)[0])
+  poly.geometry.coordinates.forEach(function(ring){
+    var isWrapped =  ring[0] === ring.slice(-1)[0]
     if(!isWrapped){
       ring.push(ring[0])
     }
