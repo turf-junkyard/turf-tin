@@ -25,6 +25,8 @@
     "tape": "^2.12.3"
   },
   "dependencies": {
+    "turf-nearest": "^0.1.0",
+    "turf-point": "^0.1.0",
     "turf-polygon": "^0.1.0"
   }
 }

@@ -1,13 +1,8 @@
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
-var t = {}
-var _ = require('lodash'),
-  polygon = require('./polygon'),
-  nearest = require('./nearest'),
-  point = require('./point')
-t.polygon = polygon
-t.nearest = nearest
-t.point = point
+var polygon = require('turf-polygon'),
+var nearest = require('turf-nearest'),
+var point = require('turf-point')
 
 module.exports = function(points, z, done){
   //break down points
