@@ -49,7 +49,6 @@ module.exports = function(points, z, done){
   triangles.features.forEach(function(tri){
     tri = correctRings(tri)
   })
-  console.log('BLARG')
   
   done(null, triangles)
   return triangles;
