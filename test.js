@@ -1,15 +1,15 @@
-var test = require('tape')
-var fs = require('fs')
-var tin = require('./')
+var test = require('tape');
+var fs = require('fs');
+var tin = require('./');
 
 test('tin', function(t){
-  var points = JSON.parse(fs.readFileSync(__dirname+'/geojson/Points.geojson'))
+  var points = JSON.parse(fs.readFileSync(__dirname+'/geojson/Points.geojson'));
   
-  var tinned = tin(points, 'elevation')
+  var tinned = tin(points, 'elevation');
 
-  t.equal(tinned.features[0].geometry.type, 'Polygon')
-  t.equal(tinned.features.length, 24)
+  t.equal(tinned.features[0].geometry.type, 'Polygon');
+  t.equal(tinned.features.length, 24);
 
-  fs.writeFileSync(__dirname+'/geojson/Tin.geojson', JSON.stringify(tinned))
-  t.end()
+  fs.writeFileSync(__dirname+'/geojson/Tin.geojson', JSON.stringify(tinned));
+  t.end();
 });

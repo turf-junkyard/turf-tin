@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/morganherlocker/turf-tin",
   "devDependencies": {
+    "benchmark": "^1.0.0",
     "tape": "^2.13.4"
   },
   "dependencies": {

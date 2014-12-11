@@ -1,67 +1,64 @@
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
-var polygon = require('turf-polygon')
-var nearest = require('turf-nearest')
-var point = require('turf-point')
+var polygon = require('turf-polygon');
+var nearest = require('turf-nearest');
+var point = require('turf-point');
 
-module.exports = function(points, z, done){
+module.exports = function(points, z){
   //break down points
-  var vertices = []
+  var vertices = [];
   points.features.forEach(function(p){
-    vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]})
+    vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]});
   })
 
-  var triangulated = triangulate(vertices)
+  var triangulated = triangulate(vertices);
   var triangles = {
     type: 'FeatureCollection',
     features: []
-  }
-
-  done = done || function () {};
+  };
 
   triangulated.forEach(function(triangle){
-    var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]]
-    var poly = polygon(coords, {a: null, b: null, c: null})
+    var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]];
+    var poly = polygon(coords, {a: null, b: null, c: null});
 
-    triangles.features.push(poly)
-  })
+    triangles.features.push(poly);
+  });
   if(z){
     // add values from vertices
     triangles.features.forEach(function(tri){
-      var coordinateNumber = 1
+      var coordinateNumber = 1;
       tri.geometry.coordinates[0].forEach(function(c){
         var closest = nearest(point(c[0], c[1]), points);
 
         if(coordinateNumber === 1){
-          tri.properties.a = closest.properties[z]
+          tri.properties.a = closest.properties[z];
         }
         else if(coordinateNumber === 2){
-          tri.properties.b = closest.properties[z]
+          tri.properties.b = closest.properties[z];
         }
         else if(coordinateNumber === 3){
-          tri.properties.c = closest.properties[z]
+          tri.properties.c = closest.properties[z];
         }
-        coordinateNumber++
-      })
-    })
+        coordinateNumber++;
+      });
+    });
   }
 
   triangles.features.forEach(function(tri){
-    tri = correctRings(tri)
-  })
+    tri = correctRings(tri);
+  });
   
-  done(null, triangles)
   return triangles;
 }
 
 function correctRings(poly){
   poly.geometry.coordinates.forEach(function(ring){
-    var isWrapped =  ring[0] === ring.slice(-1)[0]
+    var isWrapped =  ring[0] === ring.slice(-1)[0];
     if(!isWrapped){
-      ring.push(ring[0])
+      ring.push(ring[0]);
     }
   })
-  return poly
+  return poly;
 }
 
 function Triangle(a, b, c) {
