@@ -4,6 +4,24 @@ var polygon = require('turf-polygon');
 var nearest = require('turf-nearest');
 var point = require('turf-point');
 
+/**
+ * Takes a set of points and the name of a z-value property and
+ * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
+ * or a TIN for short. These are often used
+ * for developing elevation contour maps or stepped heat visualizations.
+ *
+ * @module turf/tin
+ * @param {GeoJSONFeatureCollection} points - a GeoJSON FeatureCollection containing
+ * Features with Point geometries
+ * @param {string} propertyName - name of the property from which to pull z values
+ * @return {GeoJSONFeatureCollection} output
+ * @example
+ * var fs = require('fs')
+ * var z = 'elevation'
+ * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
+ * var tinPolys = turf.tin(pts, z)
+ * console.log(tinPolys)
+ */
 module.exports = function(points, z){
   //break down points
   var vertices = [];
