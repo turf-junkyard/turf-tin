@@ -11,10 +11,10 @@ var point = require('turf-point');
  * for developing elevation contour maps or stepped heat visualizations.
  *
  * @module turf/tin
- * @param {GeoJSONFeatureCollection} points - a GeoJSON FeatureCollection containing
- * Features with Point geometries
+ * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
+ * Features with {@link Point} geometries
  * @param {string} propertyName - name of the property from which to pull z values
- * @return {GeoJSONFeatureCollection} output
+ * @return {FeatureCollection} output
  * @example
  * var fs = require('fs')
  * var z = 'elevation'
