@@ -2,87 +2,93 @@
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
 var nearest = require('turf-nearest');
+var featurecollection = require('turf-featurecollection');
 var point = require('turf-point');
 
 /**
  * Takes a set of points and the name of a z-value property and
  * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
- * or a TIN for short. These are often used
+ * or a TIN for short, returned as a collection of Polygons. These are often used
  * for developing elevation contour maps or stepped heat visualizations.
+ *
+ * This triangulates the points, as well as adds properties called `a`, `b`,
+ * and `c` representing the value of the given `propertyName` at each of
+ * the points that represent the corners of the triangle.
  *
  * @module turf/tin
  * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
  * Features with {@link Point} geometries
- * @param {string} propertyName - name of the property from which to pull z values
- * @return {FeatureCollection} output
+ * @param {string} propertyName - name of the property from which to pull z values.
+ * This is optional: if not given, then there will be no extra data added to the
+ * derived triangles.
+ * @return {FeatureCollection} TIN output
  * @example
- * var fs = require('fs')
- * var z = 'elevation'
- * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
- * var tinPolys = turf.tin(pts, z)
- * console.log(tinPolys)
+ * // generate some random point data
+ * var points = turf.random('points', 30, {
+ *   bbox: [50, 30, 70, 50]
+ * });
+ * //=points
+ * // add a random property to each point between 0 and 9
+ * for (var i = 0; i < points.features.length; i++) {
+ *   points.features[i].properties.z = ~~(Math.random() * 9);
+ * }
+ * var tin = turf.tin(points, 'z')
+ * for (var i = 0; i < tin.features.length; i++) {
+ *   var properties  = tin.features[i].properties;
+ *   // roughly turn the properties of each
+ *   // triangle into a fill color
+ *   // so we can visualize the result
+ *   properties.fill = '#' + properties.a +
+ *     properties.b + properties.c;
+ * }
+ * //=tin
  */
 module.exports = function(points, z){
   //break down points
-  var vertices = [];
-  points.features.forEach(function(p){
-    vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]});
-  })
+  var triangles = featurecollection(triangulate(points.features.map(function(p){
+    return {
+        x: p.geometry.coordinates[0],
+        y: p.geometry.coordinates[1]
+    };
+  })).map(function(triangle){
+    return polygon([[[triangle.a.x, triangle.a.y],
+        [triangle.b.x, triangle.b.y],
+        [triangle.c.x, triangle.c.y]]], {a: null, b: null, c: null});
+  }));
 
-  var triangulated = triangulate(vertices);
-  var triangles = {
-    type: 'FeatureCollection',
-    features: []
-  };
-
-  triangulated.forEach(function(triangle){
-    var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]];
-    var poly = polygon(coords, {a: null, b: null, c: null});
-
-    triangles.features.push(poly);
-  });
-  if(z){
+  if (z) {
     // add values from vertices
     triangles.features.forEach(function(tri){
-      var coordinateNumber = 1;
-      tri.geometry.coordinates[0].forEach(function(c){
+      tri.geometry.coordinates[0].forEach(function(c, i){
         var closest = nearest(point(c[0], c[1]), points);
-
-        if(coordinateNumber === 1){
-          tri.properties.a = closest.properties[z];
+        switch (i) {
+          case 0:
+            tri.properties.a = closest.properties[z];
+            break;
+          case 1:
+            tri.properties.b = closest.properties[z];
+            break;
+          case 2:
+            tri.properties.c = closest.properties[z];
+            break;
         }
-        else if(coordinateNumber === 2){
-          tri.properties.b = closest.properties[z];
-        }
-        else if(coordinateNumber === 3){
-          tri.properties.c = closest.properties[z];
-        }
-        coordinateNumber++;
       });
     });
   }
-
-  triangles.features.forEach(function(tri){
-    tri = correctRings(tri);
-  });
-  
+  triangles.features.forEach(correctRings);
   return triangles;
-}
+};
 
 function correctRings(poly){
   poly.geometry.coordinates.forEach(function(ring){
-    var isWrapped =  ring[0] === ring.slice(-1)[0];
-    if(!isWrapped){
-      ring.push(ring[0]);
-    }
-  })
-  return poly;
+    if (ring[0] !== ring.slice(-1)[0]) ring.push(ring[0]);
+  });
 }
 
 function Triangle(a, b, c) {
-  this.a = a
-  this.b = b
-  this.c = c
+  this.a = a;
+  this.b = b;
+  this.c = c;
 
   var A = b.x - a.x,
       B = b.y - a.y,
@@ -91,46 +97,37 @@ function Triangle(a, b, c) {
       E = A * (a.x + b.x) + B * (a.y + b.y),
       F = C * (a.x + c.x) + D * (a.y + c.y),
       G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
-      minx, miny, dx, dy
+      minx, miny, dx, dy;
 
   /* If the points of the triangle are collinear, then just find the
    * extremes and use the midpoint as the center of the circumcircle. */
   if(Math.abs(G) < 0.000001) {
-    minx = Math.min(a.x, b.x, c.x)
-    miny = Math.min(a.y, b.y, c.y)
-    dx   = (Math.max(a.x, b.x, c.x) - minx) * 0.5
-    dy   = (Math.max(a.y, b.y, c.y) - miny) * 0.5
+    minx = Math.min(a.x, b.x, c.x);
+    miny = Math.min(a.y, b.y, c.y);
+    dx   = (Math.max(a.x, b.x, c.x) - minx) * 0.5;
+    dy   = (Math.max(a.y, b.y, c.y) - miny) * 0.5;
 
-    this.x = minx + dx
-    this.y = miny + dy
-    this.r = dx * dx + dy * dy
+    this.x = minx + dx;
+    this.y = miny + dy;
+    this.r = dx * dx + dy * dy;
   }
 
   else {
-    this.x = (D*E - B*F) / G
-    this.y = (A*F - C*E) / G
-    dx = this.x - a.x
-    dy = this.y - a.y
-    this.r = dx * dx + dy * dy
+    this.x = (D*E - B*F) / G;
+    this.y = (A*F - C*E) / G;
+    dx = this.x - a.x;
+    dy = this.y - a.y;
+    this.r = dx * dx + dy * dy;
   }
 }
 
-Triangle.prototype.draw = function(ctx) {
-  ctx.beginPath()
-  ctx.moveTo(this.a.x, this.a.y)
-  ctx.lineTo(this.b.x, this.b.y)
-  ctx.lineTo(this.c.x, this.c.y)
-  ctx.closePath()
-  ctx.stroke()
-}
-
 function byX(a, b) {
-  return b.x - a.x
+  return b.x - a.x;
 }
 
 function dedup(edges) {
   var j = edges.length,
-      a, b, i, m, n
+      a, b, i, m, n;
 
   outer: while(j) {
     b = edges[--j]
@@ -251,12 +248,5 @@ function triangulate(vertices) {
       closed.splice(i, 1)
 
   /* Yay, we're done! */
-  return closed
+  return closed;
 }
-
-/*if (typeof module !== 'undefined') {
-    module.exports = {
-        Triangle: Triangle,
-        triangulate: triangulate
-    }
-}*/
