@@ -22,8 +22,7 @@ the points that represent the corners of the triangle.
 | parameter      | type              | description                                                                                                                                                      |
 | -------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `points`       | FeatureCollection | - a GeoJSON FeatureCollection containing Features with Point geometries                                                                                          |
-| `propertyName` | string            | _optional:_ - name of the property from which to pull z values. This is optional: if not given, then there will be no extra data added to the
-derived triangles. |
+| `propertyName` | string            | _optional:_ - name of the property from which to pull z values. This is optional: if not given, then there will be no extra data added to the derived triangles. |
 
 
 ### Example
