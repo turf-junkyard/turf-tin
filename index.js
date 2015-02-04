@@ -17,8 +17,7 @@ var featurecollection = require('turf-featurecollection');
  * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
  * Features with {@link Point} geometries
  * @param {string=} propertyName - name of the property from which to pull z values.
- * This is optional: if not given, then there will be no extra data added to the
- * derived triangles.
+ * This is optional: if not given, then there will be no extra data added to the derived triangles.
  * @return {FeatureCollection} TIN output
  * @example
  * // generate some random point data

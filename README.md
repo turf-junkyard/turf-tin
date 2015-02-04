@@ -22,8 +22,7 @@ the points that represent the corners of the triangle.
 | parameter      | type              | description                                                                                                                                                      |
 | -------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `points`       | FeatureCollection | - a GeoJSON FeatureCollection containing Features with Point geometries                                                                                          |
-| `propertyName` | string            | _optional:_ - name of the property from which to pull z values. This is optional: if not given, then there will be no extra data added to the
-derived triangles. |
+| `propertyName` | string            | _optional:_ - name of the property from which to pull z values. This is optional: if not given, then there will be no extra data added to the derived triangles. |
 
 
 ### Example
@@ -50,58 +49,16 @@ for (var i = 0; i < tin.features.length; i++) {
 //=tin
 ```
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 If the points of the triangle are collinear, then just find the
 extremes and use the midpoint as the center of the circumcircle.
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 Bail if there aren't enough vertices to form any triangles.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `undefined`
@@ -109,20 +66,6 @@ $ npm test
 Ensure the vertex array is in order of descending X coordinate
 (which is needed to ensure a subquadratic runtime), and then find
 the bounding box around the points.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `dx`
@@ -136,38 +79,10 @@ Once found, put it in the "open" list. (The "open" list is for
 triangles who may still need to be considered; the "closed" list is
 for triangles which do not.)
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 Incrementally add each vertex to the mesh.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `length`
@@ -176,20 +91,6 @@ For each open triangle, check to see if the current point is
 inside it's circumcircle. If it is, remove the triangle and add
 it's edges to an edge list.
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
@@ -197,115 +98,31 @@ If this point is to the right of this triangle's circumcircle,
 then this triangle should never get checked again. Remove it
 from the open list, add it to the closed list, and skip.
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 If not, skip this triangle.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `undefined`
 
 Remove the triangle and add it's edges to the edge list.
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 Remove any doubled edges.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `undefined`
 
 Add a new triangle for each edge.
 
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
-
 
 ### `undefined`
 
 Copy any remaining open triangles to the closed list, and then
 remove any triangles that share a vertex with the supertriangle.
-
-## Installation
-
-Requires [nodejs](http://nodejs.org/).
-
-```sh
-$ npm install turf-tin
-```
-
-## Tests
-
-```sh
-$ npm test
-```
 
 
 ### `undefined`
