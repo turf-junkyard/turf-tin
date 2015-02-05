@@ -14,6 +14,7 @@ var featurecollection = require('turf-featurecollection');
  * the points that represent the corners of the triangle.
  *
  * @module turf/tin
+ * @category interpolation
  * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
  * Features with {@link Point} geometries
  * @param {string=} propertyName - name of the property from which to pull z values.
