@@ -4,7 +4,7 @@ var polygon = require('turf-polygon');
 var featurecollection = require('turf-featurecollection');
 
 /**
- * Takes a set of points and the name of a z-value property and
+ * Takes a set of {@link Point|points} and the name of a z-value property and
  * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
  * or a TIN for short, returned as a collection of Polygons. These are often used
  * for developing elevation contour maps or stepped heat visualizations.
