@@ -15,11 +15,10 @@ var featurecollection = require('turf-featurecollection');
  *
  * @module turf/tin
  * @category interpolation
- * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
- * Features with {@link Point} geometries
- * @param {string=} propertyName - name of the property from which to pull z values.
+ * @param {FeatureCollection<Point>} points input points
+ * @param {String=} propertyName name of the property from which to pull z values
  * This is optional: if not given, then there will be no extra data added to the derived triangles.
- * @return {FeatureCollection} TIN output
+ * @return {FeatureCollection<Polygon>} TIN output
  * @example
  * // generate some random point data
  * var points = turf.random('points', 30, {
