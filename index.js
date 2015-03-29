@@ -130,7 +130,7 @@ function triangulate(vertices) {
 
     // Ensure the vertex array is in order of descending X coordinate
     // (which is needed to ensure a subquadratic runtime), and then find
-    // the bounding box around the points. 
+    // the bounding box around the points.
   vertices.sort(byX);
 
   var i = vertices.length - 1,
@@ -150,7 +150,7 @@ function triangulate(vertices) {
   //vertices. This is used like something of a sentinel value to remove
   //cases in the main algorithm, and is removed before we return any
   // results.
- 
+
   // Once found, put it in the "open" list. (The "open" list is for
   // triangles who may still need to be considered; the "closed" list is
   // for triangles which do not.)
